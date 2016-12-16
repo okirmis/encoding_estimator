@@ -1,0 +1,32 @@
+#!/usr/bin/env ruby
+
+require 'json'
+require_relative '../lib/encoding_estimator'
+
+def print_error( message )
+  puts message
+  exit! 1
+end
+
+configurations = []
+ARGV.each do |config|
+  lang      = config.split( '=' ).first
+  directory = config.split( '=' ).last
+
+  print_error "Invalid language name: '#{lang}'" unless lang.size == 2
+  print_error "Not a directory: #{directory}"    unless File.directory? directory
+
+  configurations.push( { lang: lang.to_sym, directory: directory } )
+end
+
+configurations.each do |config|
+  lang      = config[ :lang ]
+  directory = config[ :directory ]
+
+  puts "Creating language file for #{lang.to_s} from #{directory}..."
+
+  runner = EncodingEstimator::ParallelModelBuilder.new config[:directory ]
+  runner.execute!
+
+  File.open("#{lang}.json", 'w') { |f| f.write JSON.unparse(runner.results) }
+end

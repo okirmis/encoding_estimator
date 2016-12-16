@@ -1,0 +1,51 @@
+#!/usr/bin/env ruby
+
+require 'json'
+require_relative '../lib/encoding_estimator'
+
+def print_error( message )
+  puts message
+  exit! 1
+end
+
+arguments = ARGV.map { |e| e }
+switches = arguments.select { |a| a.start_with? '--' }
+files    = arguments.reject { |a| switches.include? a }
+
+encodings       = [ 'utf-8', 'iso-8859-1', 'Windows-1251', 'Windows-1252' ]
+languages       = [ :de, :en ]
+include_default = true
+directions      = [EncodingEstimator::Conversion::Directions::ENCODE, EncodingEstimator::Conversion::Directions::DECODE ]
+
+files.each { |file| print_error "No such file: #{file}" unless File.file? file }
+
+switches.each do |s|
+  if s.start_with? '--encodings='
+    encodings = s.split( '=' ).last.split( ',' )
+    next
+  end
+
+  if s == '--without-default'
+    include_default = false
+    next
+  end
+
+  if s.start_with? '--directions='
+    directions = s.split( '=' ).last.split( ',' ).map { |e| e.to_sym }
+    next
+  end
+
+  if s.start_with? '--languages='
+    languages = s.split( '=' ).last.split( ',' ).map { |e| e.to_sym }
+    next
+  end
+
+  print_error "Unknown option: #{s}"
+end
+
+files.each do |file|
+  detection = EncodingEstimator.detect File.read(file ), languages, encodings, directions, include_default
+
+  puts "#{file}: #{detection.result.key}"
+  detection.results.each { |r| puts "    #{r[:conversion].key}: #{r[:score]}" }
+end
