@@ -7,9 +7,10 @@ module EncodingEstimator
     attr_reader :files
     attr_reader :results
 
-    def initialize( directory )
-      @files   = Dir.new( directory ).entries.map { |p| "#{directory}/#{p}" }.select { |p| File.file?( p ) }
-      @results = nil
+    def initialize( directory, min_char_threshold = 0.00001 )
+      @files     = Dir.new( directory ).entries.map { |p| "#{directory}/#{p}" }.select { |p| File.file?( p ) }
+      @results   = nil
+      @threshold = min_char_threshold
     end
 
     def execute!
@@ -21,7 +22,7 @@ module EncodingEstimator
         result_list = files.map { |f| ParallelModelBuilder.analyze f }
       end
 
-      @results  = EncodingEstimator::ModelBuilder.postprocess_multiple!( result_list )
+      @results  = EncodingEstimator::ModelBuilder.postprocess_multiple!( result_list, @threshold )
     end
 
     def self.analyze( file )

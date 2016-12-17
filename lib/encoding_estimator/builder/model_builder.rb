@@ -2,9 +2,7 @@ require 'htmlentities'
 
 module EncodingEstimator
   class ModelBuilder
-    MIN_CHAR_THRESHOLD = 1.0 / 100000.0
-
-    attr_reader :filename
+    attr_reader   :filename
 
     def initialize( filename )
       @filename = filename
@@ -19,7 +17,7 @@ module EncodingEstimator
       stats
     end
 
-    def self.postprocess_multiple!( stats_collection )
+    def self.postprocess_multiple!( stats_collection, min_char_threshold = 0.00001 )
       stats     = {}
       log_stats = {}
 
@@ -30,7 +28,7 @@ module EncodingEstimator
 
       max_count = stats.values.max
       stats.each do |char, count|
-        next if count < max_count * MIN_CHAR_THRESHOLD
+        next if count < max_count * min_char_threshold
 
         log_stats[ char ] = ( 10.0 * Math.log10( count ) / Math.log10( max_count ) ).round 2
       end

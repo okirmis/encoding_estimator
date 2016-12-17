@@ -1,15 +1,31 @@
 #!/usr/bin/env ruby
 
 require 'json'
-require_relative '../lib/encoding_estimator'
+require 'slop'
+require 'encoding_estimator'
 
 def print_error( message )
   puts message
   exit! 1
 end
 
+opts = Slop.parse do |o|
+  o.float(
+      '--threshold', '-t', 'Minimum character count threshold to include a char in the^ profile', default: 0.00001
+  )
+  o.bool(
+      '--help', '-h', 'Display help'
+  )
+end
+
+
+if ARGV.include?( '-h' ) || ARGV.include?( '--help' )
+  puts "usage: #{$0} lang1=filepath1 ... langN=filepathN"
+  exit! 0
+end
+
 configurations = []
-ARGV.each do |config|
+opts.arguments.each do |config|
   lang      = config.split( '=' ).first
   directory = config.split( '=' ).last
 
@@ -25,7 +41,7 @@ configurations.each do |config|
 
   puts "Creating language file for #{lang.to_s} from #{directory}..."
 
-  runner = EncodingEstimator::ParallelModelBuilder.new config[:directory ]
+  runner = EncodingEstimator::ParallelModelBuilder.new config[:directory ], opts[:threshold]
   runner.execute!
 
   File.open("#{lang}.json", 'w') { |f| f.write JSON.unparse(runner.results) }
