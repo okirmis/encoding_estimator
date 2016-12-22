@@ -4,9 +4,41 @@ require 'json'
 require 'slop'
 require 'encoding_estimator'
 
-def print_error( message )
-  puts message
-  exit! 1
+class ModelBuildTask
+  attr_reader :directory, :language
+
+  def initialize( directory, language )
+    @directory = directory
+    @language  = language
+  end
+
+  def validate!
+    errors = [ validate_directory, validate_language ].reject { |e| e.nil? }
+    print_errors errors if errors.any?
+  end
+
+  def self.parse( string )
+    tokens = string.split '='
+    if tokens.size == 2
+      ModelBuildTask.new(tokens[1], tokens[0])
+    else
+      print_errors [ "Invalid argument: '#{string}'" ]
+    end
+  end
+
+  private
+  def self.print_errors( errors )
+    STDERR.write "#{errors.join "\n"}"
+    exit! 1
+  end
+
+  def validate_directory
+    "Not a directory: '#{@directory}'." unless File.directory? @directory
+  end
+
+  def validate_language
+    "Invalid language name (no two-letter-code): '#{@directory}'." unless @language.size == 2
+  end
 end
 
 opts = Slop.parse do |o|
@@ -24,25 +56,13 @@ if ARGV.include?( '-h' ) || ARGV.include?( '--help' )
   exit! 0
 end
 
-configurations = []
-opts.arguments.each do |config|
-  lang      = config.split( '=' ).first
-  directory = config.split( '=' ).last
-
-  print_error "Invalid language name: '#{lang}'" unless lang.size == 2
-  print_error "Not a directory: #{directory}"    unless File.directory? directory
-
-  configurations.push( { lang: lang.to_sym, directory: directory } )
-end
+configurations = opts.arguments.map { |arg| ModelBuildTask.parse(arg) }
 
 configurations.each do |config|
-  lang      = config[ :lang ]
-  directory = config[ :directory ]
+  puts "Creating language file for #{config.language} from #{config.directory}..."
 
-  puts "Creating language file for #{lang.to_s} from #{directory}..."
-
-  runner = EncodingEstimator::ParallelModelBuilder.new config[:directory ], opts[:threshold]
+  runner = EncodingEstimator::ParallelModelBuilder.new config.directory, opts[:threshold]
   runner.execute!
 
-  File.open("#{lang}.json", 'w') { |f| f.write JSON.unparse(runner.results) }
+  File.open("#{config.language}.json", 'w') { |f| f.write JSON.unparse(runner.results) }
 end
