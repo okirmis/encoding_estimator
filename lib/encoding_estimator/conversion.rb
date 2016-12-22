@@ -33,24 +33,22 @@ module EncodingEstimator
       data
     end
 
+    # Get the internal name (unique key) for this conversion. Useful when storing/referencing conversions
+    # in hashes.
+    #
+    # @return [String] Unique key of this conversion
     def key
       @key ||= "#{direction}_#{encoding}"
     end
 
-    private
-    def encode( str, encoding )
-      str.clone.force_encoding( DEFAULT_TARGET_ENCODING.to_s ).encode(
-          encoding, invalid: :replace, undef: :replace, replace: ''
-      )
-    end
-
-    def decode( str, encoding )
-      str.clone.force_encoding( encoding ).encode(
-          DEFAULT_TARGET_ENCODING.to_s, invalid: :replace, undef: :replace, replace: ''
-      )
-    end
-
-    # Generate all
+    # Generate all conversions of for given encodings and directions. Note: this will produce
+    # #encodings * #directions conversions if default is not included and #encoding * #directions + 1
+    # if the default is included.
+    #
+    # @param [Array<String>] encodings   Names of the encodings to generate conversions for
+    # @param [Array<Symbol>] directions  Directions describing which conversions (encode/decode/keep) to include
+    # @param [Boolean] include_no_change Include the default conversion (keep UTF-8) in the list
+    # @return [Array<Conversion>]        List of conversions generated from the encodings and directions
     def self.generate(
         encodings  = %w(utf-8 iso-8859-1 Windows-1251),
         directions = [ Directions::ENCODE, Directions::DECODE ],
@@ -64,6 +62,30 @@ module EncodingEstimator
       end
 
       conversions
+    end
+
+    private
+
+    # Encode a given string from the default (UTF-8) to a given encoding.
+    #
+    # @param [String] str      String to encode
+    # @param [String] encoding Name of the encoding used to encode the string
+    # @return [String] The encoded string
+    def self.encode( str, encoding )
+      str.clone.force_encoding( DEFAULT_TARGET_ENCODING.to_s ).encode(
+          encoding, invalid: :replace, undef: :replace, replace: ''
+      )
+    end
+
+    # Decode a given string from a given encoding to the default (UTF-8).
+    #
+    # @param [String] str      String to decode
+    # @param [String] encoding Name of the encoding used to decode the string
+    # @return [String] The decoded string
+    def self.decode( str, encoding )
+      str.clone.force_encoding( encoding ).encode(
+          DEFAULT_TARGET_ENCODING.to_s, invalid: :replace, undef: :replace, replace: ''
+      )
     end
   end
 end

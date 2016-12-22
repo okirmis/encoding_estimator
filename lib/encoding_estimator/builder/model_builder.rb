@@ -1,14 +1,22 @@
 require 'htmlentities'
 
 module EncodingEstimator
+
+  # Class which allows building language models (character count statistics) from a single file
   class ModelBuilder
     attr_reader   :filename
 
+    # Create a new object for a given file
+    #
+    # @param [String] filename Path to the file to learn statistics from
     def initialize( filename )
       @filename = filename
     end
 
-    def execute!
+    # Count all characters in the file
+    #
+    # @return [Hash] Hash mapping each character found in the file to the number of occurrences
+    def execute
       content = load_content
 
       stats = {}
@@ -17,7 +25,15 @@ module EncodingEstimator
       stats
     end
 
-    def self.postprocess_multiple!( stats_collection, min_char_threshold = 0.00001 )
+    # Combine multiple character count statistics to one single table. Also, characters
+    # occurring less often then a threshold are ignored. The final table is scaled
+    # logarithmically (and mapped to a score of 1 to 10)
+    #
+    # @param [Array<Hash>] stats_collection   Array of character count statistics as returned by ModelBuilder.encode
+    # @param [Float]       min_char_threshold Threshold used to decide, which characters to include
+    #                                         (include a char if count/max_count >= threshold)
+    # @return [Hash] Character count statistics, in logarithmic scale, score from 1 to 10
+    def self.join_and_postprocess( stats_collection, min_char_threshold = 0.00001 )
       stats     = {}
       log_stats = {}
 
@@ -37,6 +53,11 @@ module EncodingEstimator
     end
 
     private
+
+    # Load the content from the file specified in the constructor. HTML entities are decoded because of large
+    # collections of natural language from the internet are used (e.g. Wikipedia).
+    #
+    # @return [String] Content of the file without whitespaces
     def load_content
       raw       = File.read( @filename ).encode('UTF-16be', invalid: :replace, replace: '').encode('UTF-8')
       decoder   = HTMLEntities.new
