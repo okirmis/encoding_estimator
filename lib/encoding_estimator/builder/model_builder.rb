@@ -27,13 +27,13 @@ module EncodingEstimator
 
     # Combine multiple character count statistics to one single table. Also, characters
     # occurring less often then a threshold are ignored. The final table is scaled
-    # logarithmically (and mapped to a score of 1 to 10)
+    # linear (and mapped to a score of 1 to 10)
     #
     # @param [Array<Hash>] stats_collection   Array of character count statistics as returned by ModelBuilder.encode
     # @param [Float]       min_char_threshold Threshold used to decide, which characters to include
     #                                         (include a char if count/max_count >= threshold)
-    # @return [Hash] Character count statistics, in logarithmic scale, score from 1 to 10
-    def self.join_and_postprocess( stats_collection, min_char_threshold = 0.00001 )
+    # @return [Hash] Character count statistics, in linear scale, score from 1 to 10
+    def self.join_and_postprocess( stats_collection, min_char_threshold = 0.0001 )
       stats     = {}
       log_stats = {}
 
@@ -46,7 +46,7 @@ module EncodingEstimator
       stats.each do |char, count|
         next if count < max_count * min_char_threshold
 
-        log_stats[ char ] = ( 10.0 * Math.log10( count ) / Math.log10( max_count ) ).round 2
+        log_stats[ char ] = ( 10.0 * count / max_count ).round( 6 )
       end
 
       log_stats

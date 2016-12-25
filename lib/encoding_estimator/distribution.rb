@@ -16,12 +16,13 @@ module EncodingEstimator
 
     # Calculate the likelihood of a string for the given language
     #
-    # @param [String] str Data to calculate the likelihood for
-    # @return [Float]     Total likelihood
-    def evaluate( str )
+    # @param [String] str     Data to calculate the likelihood for
+    # @param [Float]  penalty Threshold which defines when chars are weighted negative (-> calc score - thresh)
+    # @return [Float] Total likelihood
+    def evaluate( str, penalty )
       dist = @distribution
       sum = 0.0
-      str.each_char { |c| sum += dist.fetch( c, 0 ) }
+      str.each_char { |c| sum += dist.fetch( c, 0.0 ) - penalty }
       sum
     end
 

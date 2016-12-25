@@ -1,22 +1,43 @@
 #!/usr/bin/env ruby
 
+# This tool can be used to generate language profiles from directories containing
+# a lot plaintext. It can process multiple languages and directories at once.
+# The models created will be written to the working directory as "two-letter-lang-code.json".
+
+# Get environment: development or production?
+is_development = ( ENV.key?( 'ENCEST_ENV' ) and ENV[ 'ENCEST_ENV' ] == 'development' )
+
 require 'json'
 require 'slop'
-require 'encoding_estimator'
 
+if is_development
+  require_relative '../lib/encoding_estimator'
+else
+  require 'encoding_estimator'
+end
+
+# Represents a task as specified as command line argument to build a language model for a given
+# language using the files from a given directory.
 class ModelBuildTask
   attr_reader :directory, :language
 
+  # New model build task representing a directory and a language code
   def initialize( directory, language )
     @directory = directory
     @language  = language
   end
 
+  # Validate the object for correct directory name and language code. Exits the program on error.
   def validate!
     errors = [ validate_directory, validate_language ].reject { |e| e.nil? }
     print_errors errors if errors.any?
   end
 
+  # Create a ModelBuildTask from a given command line argument of the form
+  # "two-letter-code=directory". Quits the program on parsing errors.
+  #
+  # @param [String] string Command line argument to parse
+  # @return [ModelBuildTask] ModelBuildTask representing the command line argument (language and directory)
   def self.parse( string )
     tokens = string.split '='
     if tokens.size == 2
@@ -27,42 +48,59 @@ class ModelBuildTask
   end
 
   private
+
+  # Print a list of errors to standard error
   def self.print_errors( errors )
     STDERR.write "#{errors.join "\n"}"
     exit! 1
   end
 
+  # Create directory validation error message. nil if everything is fine.
   def validate_directory
     "Not a directory: '#{@directory}'." unless File.directory? @directory
   end
 
+  # Create two-letter-language-code error message. nil if no error
   def validate_language
     "Invalid language name (no two-letter-code): '#{@directory}'." unless @language.size == 2
   end
 end
 
+# Specify/parse the command line arguments.
 opts = Slop.parse do |o|
   o.float(
-      '--threshold', '-t', 'Minimum character count threshold to include a char in the^ profile', default: 0.00001
+      '--threshold', '-t', 'Minimum character count threshold to include a char in the profile', default: 0.00001
+  )
+  o.integer(
+       '--cores', '-c', 'Number of cores used to process the files', default: 4
+  )
+  o.bool(
+      '--silent', '-s', 'Disable progressbars and other outputs'
   )
   o.bool(
       '--help', '-h', 'Display help'
   )
 end
 
-
+# Help requested?
 if ARGV.include?( '-h' ) || ARGV.include?( '--help' )
   puts "usage: #{$0} lang1=filepath1 ... langN=filepathN"
   exit! 0
 end
 
+silent = opts[:silent]
+
+# Parse all arguments of the form two-letter-language-code=directory-to-process-files-from
 configurations = opts.arguments.map { |arg| ModelBuildTask.parse(arg) }
 
+# Process every language with its associated directory
 configurations.each do |config|
-  puts "Creating language file for #{config.language} from #{config.directory}..."
+  puts "Creating language file for #{config.language} from #{config.directory}..." unless silent
 
-  runner = EncodingEstimator::ParallelModelBuilder.new config.directory, opts[:threshold]
-  runner.execute!
+  # Create the model from the directory
+  runner = EncodingEstimator::ParallelModelBuilder.new( config.directory, opts[:threshold] )
+  runner.execute!( opts[:cores], !silent )
 
+  # Save the model as json
   File.open("#{config.language}.json", 'w') { |f| f.write JSON.unparse(runner.results) }
 end

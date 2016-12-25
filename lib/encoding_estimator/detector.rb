@@ -66,6 +66,7 @@ module EncodingEstimator
     attr_reader :conversions
     attr_reader :languages
     attr_reader :num_processes
+    attr_reader :penalty
 
     # Create a new instance with a given configuration consisting of a list of conversions, languages and the number
     # of processes.
@@ -73,12 +74,14 @@ module EncodingEstimator
     # @param [Array<EncodingEstimator::Conversion>] conversions   Conversions to perform/test on the inputs.
     # @param [Array<Symbol>]                        languages     Languages to consider when evaluating the input. Array
     #                                                             of two-letter-codes
+    # @param [Float]                                penalty       Base penalty subtracted from each char's score
     # @param [Integer]                              num_processes Number of processes the detection will run on  -> true
     #                                                             multi-threading through the parallel gem
-    def initialize( conversions, languages, num_processes = nil )
+    def initialize( conversions, languages, penalty = 0.01, num_processes = nil )
       @conversions   = conversions
       @languages     = languages
       @num_processes = num_processes
+      @penalty       = penalty
 
       @distributions = languages.map { |lang| Distribution.new( lang ) }
     end
@@ -112,7 +115,7 @@ module EncodingEstimator
     #                       the evaluation for the input string
     def detect_st( str, matrix )
       matrix.map do |combination|
-        EncodingEstimator::Detector.detect_single str, combination
+        detect_single str, combination
       end
     end
 
@@ -125,7 +128,7 @@ module EncodingEstimator
     #                       the evaluation for the input string
     def detect_mt( str, matrix )
       Parallel.map( matrix, in_processes: num_processes ) do |combination|
-        EncodingEstimator::Detector.detect_single str, combination
+        detect_single str, combination
       end
     end
 
@@ -144,10 +147,10 @@ module EncodingEstimator
     # @param [EncodingEstimator::CDCombination] combination Distribution/Conversion to evaluate on the input
     #
     # @return [EncodingEstimator::SingleDetectionResult] Result of the evaluation of the given combination on the input
-    def self.detect_single( str, combination )
+    def detect_single( str, combination )
       EncodingEstimator::SingleDetectionResult.new(
           combination.conversion.key,
-          combination.distribution.evaluate( combination.conversion.perform(str) )
+          combination.distribution.evaluate(combination.conversion.perform(str), @penalty )
       )
     end
 

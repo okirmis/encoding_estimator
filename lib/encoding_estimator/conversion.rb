@@ -71,7 +71,7 @@ module EncodingEstimator
     # @param [String] str      String to encode
     # @param [String] encoding Name of the encoding used to encode the string
     # @return [String] The encoded string
-    def self.encode( str, encoding )
+    def encode( str, encoding )
       str.clone.force_encoding( DEFAULT_TARGET_ENCODING.to_s ).encode(
           encoding, invalid: :replace, undef: :replace, replace: ''
       )
@@ -82,7 +82,7 @@ module EncodingEstimator
     # @param [String] str      String to decode
     # @param [String] encoding Name of the encoding used to decode the string
     # @return [String] The decoded string
-    def self.decode( str, encoding )
+    def decode( str, encoding )
       str.clone.force_encoding( encoding ).encode(
           DEFAULT_TARGET_ENCODING.to_s, invalid: :replace, undef: :replace, replace: ''
       )

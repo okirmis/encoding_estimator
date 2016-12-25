@@ -26,8 +26,8 @@ module EncodingEstimator
     #
     # @param [Integer] max_processes Maximum number of processes to spawn for processing the files
     # @param [Boolean] show_progress if set to true and the ruby-progressbar gem is installed, show a progressbar
-    # @return [Hash] Character count statistics combined from all files of the directory, scaled logarithmically
-    def execute!( max_processes = 8, show_progress = true )
+    # @return [Hash] Character count statistics combined from all files of the directory, scaled linear
+    def execute!( max_processes = 4, show_progress = true )
       if EncodingEstimator::ParallelSupport.supported?
         opts = {
             in_processes: max_processes,
