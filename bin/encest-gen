@@ -4,13 +4,11 @@
 # a lot plaintext. It can process multiple languages and directories at once.
 # The models created will be written to the working directory as "two-letter-lang-code.json".
 
-# Get environment: development or production?
-is_development = ( ENV.key?( 'ENCEST_ENV' ) and ENV[ 'ENCEST_ENV' ] == 'development' )
-
 require 'json'
 require 'slop'
 
-if is_development
+# Get environment: development or production? -> Installed gem or current source dir
+if ENV.key?( 'ENCEST_ENV' ) and ENV[ 'ENCEST_ENV' ] == 'development'
   require_relative '../lib/encoding_estimator'
 else
   require 'encoding_estimator'

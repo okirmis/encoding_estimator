@@ -2,15 +2,21 @@
 
 require 'json'
 require 'slop'
-require 'encoding_estimator'
+
+# Get environment: development or production? -> Installed gem or current source dir
+if ENV.key?( 'ENCEST_ENV' ) and ENV[ 'ENCEST_ENV' ] == 'development'
+  require_relative '../lib/encoding_estimator'
+else
+  require 'encoding_estimator'
+end
 
 opts = Slop.parse do |o|
   o.array(
       '--encodings', 'Encodings to test', default: %w(utf-8 iso-8859-1 Windows-1251 Windows-1252)
   )
   o.array(
-      '--directions', 'Directions (encode/decode) to test',
-      default: [EncodingEstimator::Conversion::Directions::ENCODE, EncodingEstimator::Conversion::Directions::DECODE]
+      '--operations', 'Operations (encode/decode) to test',
+      default: [EncodingEstimator::Conversion::Operation::ENCODE, EncodingEstimator::Conversion::Operation::DECODE]
   )
   o.array(
       '--languages', 'Language profiles to apply (distributions to use)', default: ['de', 'en']
@@ -36,9 +42,9 @@ end
 opts.arguments.each do |file|
   detection = EncodingEstimator.detect File.read(file ), {
                     languages:  opts[:languages],  encodings: opts[:encodings],
-                    directions: opts[:directions], include_default: true
+                    operations: opts[:operations], include_default: true
   }
 
   puts "#{file}: #{detection.result.key}"
-  detection.results.each { |r| puts "    #{r[:conversion].key}: #{r[:score]}" }
+  detection.results.each { |r| puts "    #{r[:conversion].key}: #{r[:score]} -> #{r[:conversion].perform( File.read(file ) )}" }
 end
