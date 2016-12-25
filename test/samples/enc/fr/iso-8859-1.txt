@@ -1,0 +1,1 @@
+Ruby est un langage de programmation libre. Il est interprÃ©tÃ©, orientÃ© objet et multi-paradigme.
