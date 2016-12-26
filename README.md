@@ -6,14 +6,14 @@ This gem allows you to detect the encoding of a string based on their content. I
 
 The gem has two major high level methods. The first one can be used when you want to know, how a string is encoded:
 
-```
+```ruby
 detection = EncodingEstimator.detect( File.read( 'foo.txt' ), languages: [ :en, :de ] )
 puts "Encoding: #{detection.result.encoding}"
 ```
 
 The second one is a shortcut you can use in case you just want to be sure to get a string of an unknown encoding as a UTF-8 encoded string (should be the ruby default):
 
-```
+```ruby
 utf8_txt = EncodingEstimator.ensure_utf8( File.read( 'foo.txt' ), languages: [ :en, :de ] )
 ```
 
