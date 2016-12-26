@@ -1,6 +1,6 @@
 # EncodingEstimator: Detect encoding of strings
 
-This gem allows you to detect the encoding of a string based on their content. It uses character distribution statistics to check which encoding is the one that gives you the best results.
+This gem allows you to detect the encoding of strings/files based on their content. This can be useful if you need to load data from sources with unknown encodings. The gem uses character distribution statistics to check which encoding is the one that gives you the best results.
 
 ## Usage in Ruby Code
 
