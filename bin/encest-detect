@@ -10,16 +10,20 @@ else
   require 'encoding_estimator'
 end
 
+
 opts = Slop.parse do |o|
   o.array(
-      '--encodings', 'Encodings to test', default: %w(utf-8 iso-8859-1 Windows-1251 Windows-1252)
+      '--encodings', '-e', 'Encodings to test', default: %w(iso-8859-1 utf-16le Windows-1251 Windows-1252)
   )
   o.array(
-      '--operations', 'Operations (encode/decode) to test',
-      default: [EncodingEstimator::Conversion::Operation::ENCODE, EncodingEstimator::Conversion::Operation::DECODE]
+      '--operations', '-o', 'Operations (encode/decode) to test',
+      default: [EncodingEstimator::Conversion::Operation::DECODE]
   )
   o.array(
-      '--languages', 'Language profiles to apply (models to use)', default: ['de', 'en']
+      '--languages', '-l', 'Language profiles to apply (models to use)', default: ['de', 'en']
+  )
+  o.integer(
+       '--threads', '-t', 'Number of threads to use (0 to disable multithreading)', default: 0
   )
   o.bool(
       '--help', '-h', 'Display help'
@@ -42,11 +46,15 @@ end
 # Internal vs. external profiles
 opts[:languages] = opts[:languages].map { |l| l.size == 2 ? l.to_sym : l }
 
+# Multithreading: nil for 0
+opts[:threads] = opts[:threads] == 0 ? nil : opts[:threads]
+
 # Process every file
 opts.arguments.each do |file|
   detection = EncodingEstimator.detect File.read(file ), {
                     languages:  opts[:languages],  encodings: opts[:encodings],
-                    operations: opts[:operations], include_default: true
+                    operations: opts[:operations], include_default: true,
+                    num_cores:  opts[:threads]
   }
 
   puts "#{file}: #{detection.result.key}"

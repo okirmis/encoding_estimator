@@ -15,6 +15,7 @@ module EncodingEstimator
   #                                               The order defines the priority when choosing from encodings with same detection score
   # @param [Array<Symbol>]        operations      Choose which operations (encoding to/decoding from an encoding to UTF-8) to test
   # @param [Float]                penalty         Penalty threshold to define when chars are weighted negative
+  # @param [Integer]              num_cores       Number of threads to use for detection. Use "nil" to use single threaded implementation
   # @param [Boolean]              include_default Include "keep as is" conversion when testing, e.g. check if the string is
   #                                               already UTF-8 encoded
   #
@@ -23,10 +24,11 @@ module EncodingEstimator
 
     params = {
       languages:        [ :de, :en ],
-      encodings:        %w(utf-8 iso-8859-1 windows-1251),
+      encodings:        %w(iso-8859-1 utf-16le windows-1251),
       operations:       [Conversion::Operation::DECODE],
       include_default:  true,
-      penalty:          0.01
+      penalty:          0.01,
+      num_cores:        nil,
     }.merge config
 
     EncodingEstimator.detect( data, params ).result.perform( data )
@@ -40,6 +42,7 @@ module EncodingEstimator
   #                                        The order defines the priority when choosing from encodings with same detection score
   # @param [Array<Symbol>] operations      Choose which operations (encoding to/decoding from an encoding to UTF-8) to test
   # @param [Float]         penalty         Penalty threshold to define when chars are weighted negative
+  # @param [Integer]       num_cores       Number of threads to use for detection. Use "nil" to use single threaded implementation
   # @param [Boolean]       include_default Include "keep as is" conversion when testing, e.g. check if the string is
   #                                        already UTF-8 encoded
   #
@@ -51,12 +54,13 @@ module EncodingEstimator
         encodings:       %w(iso-8859-1 utf-16le windows-1251),
         operations:      [Conversion::Operation::DECODE],
         include_default: true,
-        penalty:         0.01
+        penalty:         0.01,
+        num_cores:       nil,
     }.merge config
 
     Detector.new(
         Conversion.generate( params[ :encodings ], params[ :operations ], params[ :include_default ] ),
-        params[ :languages ].map { |l| EncodingEstimator::LanguageModel.new( l ) }, params[ :penalty ], 8
+        params[ :languages ].map { |l| EncodingEstimator::LanguageModel.new( l ) }, params[ :penalty ], params[:num_cores]
     ).detect data
   end
 end

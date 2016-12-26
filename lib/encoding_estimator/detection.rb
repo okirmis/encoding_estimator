@@ -32,7 +32,7 @@ module EncodingEstimator
     # @return [Array<Hash>] Array containing a hash for every conversion of the form
     #                       { conversion: EncodingEstimator::Conversion, score: Float }
     def results
-      @results ||= @conversions.map { |c| { conversion: c, score: @scores[ c.key ].round( 2 ) } }
+      @results ||= @conversions.map { |c| { conversion: c, score: @scores[ c.key ] } }
     end
 
     private
