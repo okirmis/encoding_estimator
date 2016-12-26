@@ -67,10 +67,10 @@ end
 # Specify/parse the command line arguments.
 opts = Slop.parse do |o|
   o.float(
-      '--threshold', '-t', 'Minimum character count threshold to include a char in the profile', default: 0.00001
+      '--threshold', '-t', 'Minimum character count threshold to include a char in the model (default: 0.00001)', default: 0.00001
   )
   o.integer(
-       '--cores', '-c', 'Number of cores used to process the files', default: 4
+       '--threads', '-n', 'Number of threads used to process the files (default: 4)', default: 4
   )
   o.bool(
       '--silent', '-s', 'Disable progressbars and other outputs'
@@ -82,7 +82,8 @@ end
 
 # Help requested?
 if ARGV.include?( '-h' ) || ARGV.include?( '--help' )
-  puts "usage: #{$0} lang1=filepath1 ... langN=filepathN"
+  puts opts
+  puts ( ' ' * 4 ) + 'other arguments: lang1=directory1 ... langN=directoryN'
   exit! 0
 end
 
@@ -97,7 +98,7 @@ configurations.each do |config|
 
   # Create the model from the directory
   runner = EncodingEstimator::ParallelModelBuilder.new( config.directory, opts[:threshold] )
-  runner.execute!( opts[:cores], !silent )
+  runner.execute!( opts[:threads], !silent )
 
   # Save the model as json
   File.open("#{config.language}.json", 'w') { |f| f.write JSON.unparse(runner.results) }

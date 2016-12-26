@@ -13,17 +13,17 @@ end
 
 opts = Slop.parse do |o|
   o.array(
-      '--encodings', '-e', 'Encodings to test', default: %w(iso-8859-1 utf-16le Windows-1251 Windows-1252)
+      '--encodings', '-e', 'Encodings to test (default: iso-8859-1,utf-16le,windows-1251)', default: %w(iso-8859-1 utf-16le windows-1251)
   )
   o.array(
-      '--operations', '-o', 'Operations (encode/decode) to test',
+      '--operations', '-o', 'Operations (enc/dec) to test (default: dec)',
       default: [EncodingEstimator::Conversion::Operation::DECODE]
   )
   o.array(
-      '--languages', '-l', 'Language profiles to apply (models to use)', default: ['de', 'en']
+      '--languages', '-l', 'Language models to apply (default: en,de)', default: ['de', 'en']
   )
   o.integer(
-       '--threads', '-t', 'Number of threads to use (0 to disable multithreading)', default: 0
+       '--threads', '-t', 'Number of threads to use (0 to disable multithreading, default)', default: 0
   )
   o.bool(
       '--help', '-h', 'Display help'
