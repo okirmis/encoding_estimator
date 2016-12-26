@@ -23,7 +23,7 @@ module EncodingEstimator
     params = {
       languages:        [ :de, :en ],
       encodings:        %w(utf-8 iso-8859-1 windows-1251),
-      operations:       [Conversion::Operation::DECODE, Conversion::Operation::ENCODE ],
+      operations:       [Conversion::Operation::DECODE],
       include_default:  true,
       penalty:          0.01
     }.merge config
@@ -48,7 +48,7 @@ module EncodingEstimator
     params = {
         languages:       [ :de, :en ],
         encodings:       %w(iso-8859-1 utf-16le windows-1251),
-        operations:      [Conversion::Operation::DECODE, Conversion::Operation::ENCODE ],
+        operations:      [Conversion::Operation::DECODE],
         include_default: true,
         penalty:         0.01
     }.merge config

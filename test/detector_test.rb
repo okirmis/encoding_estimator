@@ -17,7 +17,9 @@ class TestDetector < Minitest::Test
 
     # Load file and detect the encoding
     detection = EncodingEstimator.detect(
-        get_file_content( language, encoding, operation ), languages: [ language ], include_default: false, encodings: DETECTOR_TEST_ENCODINGS
+        get_file_content( language, encoding, operation ),
+        languages: [ language ], include_default: false, encodings: DETECTOR_TEST_ENCODINGS,
+        operations: [EncodingEstimator::Conversion::Operation::ENCODE, EncodingEstimator::Conversion::Operation::DECODE]
     )
 
     # Should be the given encoding
