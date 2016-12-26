@@ -71,19 +71,17 @@ module EncodingEstimator
     # Create a new instance with a given configuration consisting of a list of conversions, languages and the number
     # of processes.
     #
-    # @param [Array<EncodingEstimator::Conversion>] conversions   Conversions to perform/test on the inputs.
-    # @param [Array<Symbol>]                        languages     Languages to consider when evaluating the input. Array
-    #                                                             of two-letter-codes
-    # @param [Float]                                penalty       Base penalty subtracted from each char's score
-    # @param [Integer]                              num_processes Number of processes the detection will run on  -> true
-    #                                                             multi-threading through the parallel gem
+    # @param [Array<EncodingEstimator::Conversion>]    conversions   Conversions to perform/test on the inputs.
+    # @param [Array<EncodingEstimator::LanguageModel>] languages     Languages to consider when evaluating the input. Array
+    #                                                                of two-letter-codes
+    # @param [Float]                                   penalty       Base penalty subtracted from each char's score
+    # @param [Integer]                                 num_processes Number of processes the detection will run on  -> true
+    #                                                                multi-threading through the parallel gem
     def initialize( conversions, languages, penalty = 0.01, num_processes = nil )
       @conversions   = conversions
       @languages     = languages
       @num_processes = num_processes
       @penalty       = penalty
-
-      @distributions = languages.map { |lang| Distribution.new( lang ) }
     end
 
     # Detect the encoding using the current configuration given an input string
@@ -136,8 +134,8 @@ module EncodingEstimator
     #
     # @return [Array<EncodingEstimator::CDCombination>] Conversion-Distribution-Combinations of the current config
     def combinations
-      @distributions.map {
-          |dist| @conversions.map { |c| EncodingEstimator::CDCombination.new( c, dist ) }
+      @languages.map {
+          |l| @conversions.map { |c| EncodingEstimator::CDCombination.new( c, l.distribution ) }
       }.flatten
     end
 
@@ -150,7 +148,7 @@ module EncodingEstimator
     def detect_single( str, combination )
       EncodingEstimator::SingleDetectionResult.new(
           combination.conversion.key,
-          combination.distribution.evaluate(combination.conversion.perform(str), @penalty )
+          combination.distribution.evaluate( combination.conversion.perform(str), @penalty )
       )
     end
 

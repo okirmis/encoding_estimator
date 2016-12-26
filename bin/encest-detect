@@ -19,7 +19,7 @@ opts = Slop.parse do |o|
       default: [EncodingEstimator::Conversion::Operation::ENCODE, EncodingEstimator::Conversion::Operation::DECODE]
   )
   o.array(
-      '--languages', 'Language profiles to apply (distributions to use)', default: ['de', 'en']
+      '--languages', 'Language profiles to apply (models to use)', default: ['de', 'en']
   )
   o.bool(
       '--help', '-h', 'Display help'
@@ -39,6 +39,10 @@ opts.arguments.each do |file|
   end
 end
 
+# Internal vs. external profiles
+opts[:languages] = opts[:languages].map { |l| l.size == 2 ? l.to_sym : l }
+
+# Process every file
 opts.arguments.each do |file|
   detection = EncodingEstimator.detect File.read(file ), {
                     languages:  opts[:languages],  encodings: opts[:encodings],
@@ -46,5 +50,5 @@ opts.arguments.each do |file|
   }
 
   puts "#{file}: #{detection.result.key}"
-  detection.results.each { |r| puts "    #{r[:conversion].key}: #{r[:score]} -> #{r[:conversion].perform( File.read(file ) )}" }
+  detection.results.each { |r| puts "    #{r[:conversion].key}: #{r[:score]}" }
 end
