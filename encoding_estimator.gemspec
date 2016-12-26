@@ -10,9 +10,11 @@ Gem::Specification.new do |spec|
   spec.email         = ['kirmis@st.ovgu.de']
 
   spec.summary       = %q{Detect encoding of an input string using character count statistics.}
-  spec.description   = %q{This gem allows you to detect the encoding of a string based on their content. It uses character distribution statistics to check which encoding is the one that gives you the best results.}
+  spec.description   = %q{This gem allows you to detect the encoding of strings/files based on their content. This can be useful if you need to load data from sources with unknown encodings. The gem uses character distribution statistics to check which encoding is the one that gives you the best results.}
   spec.homepage      = 'https://git.iftrue.de/okirmis/encoding_estimator'
   spec.license       = 'MIT'
+
+  spec.required_ruby_version = '>= 1.9.3'
 
   spec.files         = `git ls-files -z`.split("\x0").reject do |f|
     f.match(%r{^(test|spec|features)/})
