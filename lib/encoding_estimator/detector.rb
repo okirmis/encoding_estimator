@@ -47,7 +47,7 @@ module EncodingEstimator
   end
 
 
-  # Class to store a detection score of a single combination of a distribution and a conversion
+  # Class to store a detection score of a single combination of a conversion and its evaluation score
   class SingleDetectionResult
     attr_reader :key, :score
 
@@ -99,7 +99,13 @@ module EncodingEstimator
       end
 
       range = EncodingEstimator::RangeScale.new( sums.values.min, sums.values.max )
-      EncodingEstimator::Detection.new( sums.map { |k,s| [ k, range.scale( s ) ] }.to_h, @conversions )
+
+      scaled_scores = {}
+      sums.each do |k,s|
+        scaled_scores[ k ] = range.scale s
+      end
+
+      EncodingEstimator::Detection.new( scaled_scores, @conversions )
     end
 
     private
