@@ -114,7 +114,7 @@ This gem uses a statistical approach to determine the encoding of an input strin
 
 ## Supported languages
 
-Currently, the gem has support for 5 languages: English, German, French, Spanish and Russian. The language profiles were generated from Wikipedia dumps. You can generate your own language profiles using the `encest-gen` tool. For more information on this tool, see above.
+Currently, the gem has support for 10 languages: English, German, French, Spanish, Russian, Portuguese, Greek, Turkish, Chinese and Arabic. The language profiles were generated from Wikipedia dumps. You can generate your own language profiles using the `encest-gen` tool. For more information on this tool, see above.
 
 ## Supported encodings
 
