@@ -1,39 +1,34 @@
-before_script:
-  - bundle install
-
-
-
 test:1.9.3:
   image: ruby:1.9.3
   script:
-    - ruby test/detector_test.rb
+    - bundle install && ruby test/detector_test.rb
 
 test:2.0:
   image: ruby:2.0
   script:
-    - ruby test/detector_test.rb
+    - bundle install && ruby test/detector_test.rb
 
 
 test:2.1:
   image: ruby:2.1
   script:
-    - ruby test/detector_test.rb
+    - bundle install && ruby test/detector_test.rb
 
 
 test:2.2:
   image: ruby:2.2
   script:
-    - ruby test/detector_test.rb
+    - bundle install && ruby test/detector_test.rb
 
 
 test:2.3:
   image: ruby:2.3
   script:
-    - ruby test/detector_test.rb
+    - bundle install && ruby test/detector_test.rb
 
 
 test:2.4:
   image: ruby:2.4
   script:
-    - ruby test/detector_test.rb
+    - bundle install && ruby test/detector_test.rb
 
