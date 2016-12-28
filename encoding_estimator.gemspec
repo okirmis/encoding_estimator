@@ -11,7 +11,7 @@ Gem::Specification.new do |spec|
 
   spec.summary       = %q{Detect encoding of an input string using character count statistics.}
   spec.description   = %q{This gem allows you to detect the encoding of strings/files based on their content. This can be useful if you need to load data from sources with unknown encodings. The gem uses character distribution statistics to check which encoding is the one that gives you the best results.}
-  spec.homepage      = 'https://git.iftrue.de/okirmis/encoding_estimator'
+  spec.homepage      = 'https://github.com/okirmis/encoding_estimator'
   spec.license       = 'MIT'
 
   spec.required_ruby_version = '>= 2.0'
