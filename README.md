@@ -85,11 +85,14 @@ fr/utf-8.txt: keep_utf-8
 
 This tool is can generate the language models the `encest-detect` tool uses (or the other classes in this gem). The language models are *very simple* JSON files, looking somewhat like that:
 
-`{"W":0.222539,"ä":0.288427,"-":0.513657,"Z":0.118473 ... }`
+```javascript
+{"W":0.222539,"ä":0.288427,"-":0.513657,"Z":0.118473 ... }
+```
 
 The `encest-gen` command generates these scores based on a lot of input text. To generate the language models this gem provides by default, I used dumps of the Wikipedia, but you can use any (UTF-8-encoded) text files you like. Just put them in one directory, let's call it *pt* (for Portuguese) and extract the files you want to learn the language model from to that directory (e.g. the Wikipedia dump). Please split large files into smaller chunks of text (max ~20MiB) because ruby otherwise will crash with NoMemoryError and you don't see a progressbar.
 
 Usage of `encest-gen` is quite simple:
+
 ```
 usage: encest-gen [options]
     --threshold, -t  Minimum character count threshold to include a char in the model (default: 0.00001)
