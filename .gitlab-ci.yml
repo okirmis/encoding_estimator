@@ -1,0 +1,25 @@
+before_script:
+  - bundle install
+
+
+script:
+  - ruby test/detector_test.rb
+
+
+test:1.9.3:
+  image: ruby:1.9.3
+
+test:2.0:
+  image: ruby:2.0
+
+test:2.1:
+  image: ruby:2.1
+
+test:2.2:
+  image: ruby:2.2
+
+test:2.3:
+  image: ruby:2.3
+
+test:2.4:
+  image: ruby:2.4
