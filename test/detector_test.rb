@@ -120,11 +120,11 @@ class TestDetector < Minitest::Test
         detection.score == detection.results.map { |r| r[:score] }.max
     )
 
-    assert(
+    assert_equal(
         EncodingEstimator.ensure_utf8(
             get_file_content( language, encoding, operation ),
             configuration
-        ) == get_file_content( language, 'utf-8', EncodingEstimator::Conversion::Operation::KEEP )
+        ), get_file_content( language, 'utf-8', EncodingEstimator::Conversion::Operation::KEEP )
     )
   end
 
