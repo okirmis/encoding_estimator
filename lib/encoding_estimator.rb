@@ -28,7 +28,7 @@ module EncodingEstimator
       operations:       [Conversion::Operation::DECODE],
       include_default:  true,
       penalty:          0.01,
-      num_cores:        nil,
+      num_cores:        nil
     }.merge config
 
     EncodingEstimator.detect( data, params ).result.perform( data )
@@ -48,14 +48,13 @@ module EncodingEstimator
   #
   # @return [EncodingEstimator::Detection] Detection result with scores for all conversions
   def EncodingEstimator.detect( data, config )
-
     params = {
         languages:       [ :de, :en ],
         encodings:       %w(iso-8859-1 utf-16le windows-1251),
         operations:      [Conversion::Operation::DECODE],
         include_default: true,
         penalty:         0.01,
-        num_cores:       nil,
+        num_cores:       nil
     }.merge config
 
     Detector.new(

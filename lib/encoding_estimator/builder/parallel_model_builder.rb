@@ -28,7 +28,7 @@ module EncodingEstimator
     # @param [Boolean] show_progress if set to true and the ruby-progressbar gem is installed, show a progressbar
     # @return [Hash] Character count statistics combined from all files of the directory, scaled linear
     def execute!( max_processes = 4, show_progress = true )
-      if EncodingEstimator::ParallelSupport.supported?
+      if EncodingEstimator::ParallelSupport.supported? && !max_processes.nil?
         opts = {
             in_processes: max_processes,
             progress: ( show_progress && EncodingEstimator::ParallelSupport.progress? ) ? 'Analyzing' : nil

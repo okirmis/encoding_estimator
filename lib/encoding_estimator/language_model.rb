@@ -19,10 +19,10 @@ module EncodingEstimator
     #
     # @return [Boolean] true, if the referenced model file exists
     def valid?
-      if internal?
-        @language.to_s.size == 2 and File.file? internal_path
-      else
+      if external?
         File.file? external_path
+      else
+        @language.to_s.size == 2 and File.file? internal_path
       end
     end
 

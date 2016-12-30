@@ -26,6 +26,7 @@ Gem::Specification.new do |spec|
 
   spec.add_development_dependency 'bundler'
   spec.add_development_dependency 'minitest'
+  spec.add_development_dependency 'parallel'
 
   spec.add_dependency 'htmlentities', '~> 4.3'
   spec.add_dependency 'json', '~> 2.0'

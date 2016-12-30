@@ -1,0 +1,398 @@
+{{Infobox Programmiersprache
+ | Name = Ruby
+ | Logo = [[Datei:Ruby logo.svg|150px|Logo]]
+ | Beschreibung = Offizielles Logo
+ | Paradigma = multiparadigmatisch, tief integrierte Objektorientierung
+ | Erscheinungsjahr = 1995
+ | Entwickler = [[Yukihiro Matsumoto]] und andere
+ | AktuelleVersion = 2.3.2
+ | AktuelleVersionFreigabeDatum = 15. November 2016
+ | Typisierung = [[Starke Typisierung|stark]], [[Dynamische Typisierung|dynamisch]] („[[Duck-Typing]]“)
+ | Implementierung = MRI / CRuby (YARV), [[JRuby]], [[Rubinius]] (siehe [[#Implementierungen|unten]])
+ | Betriebssystem = [[Plattformunabhängigkeit|plattformunabhängig]]
+ | Beeinflusst_von = [[Smalltalk (Programmiersprache)|Smalltalk]], [[Perl (Programmiersprache)|Perl]], [[Python (Programmiersprache)|Python]], [[Lisp]], [[CLU (Programmiersprache)|CLU]], [[Eiffel (Programmiersprache)|Eiffel]], [[Ada (Programmiersprache)|Ada]], [[Dylan (Programmiersprache)|Dylan]], [[JavaScript]]
+ | Beeinflusste = [[Crystal (Programmiersprache)|Crystal]], [[D (Programmiersprache)|D]],<ref>[http://www.digitalmars.com/d/1.0/ D Programming Language 1.0 , Intro.] Digital Mars</ref> [[Elixir (Programmiersprache)|Elixir]], [[Groovy]], [[Rust (Programmiersprache)|Rust]], [[Swift (Programmiersprache)|Swift]]
+ | Lizenz = [[BSD-Lizenz|2-clause BSD]] und eigene (siehe [[#Nutzungsbedingungen|Nutzungsbedingungen]])
+ | Website = [http://www.ruby-lang.org/de/ ruby-lang.org]
+}}
+'''Ruby''' ({{enS}} für ''[[Rubin]]'') ist eine  [[höhere Programmiersprache]], die Mitte der 1990er Jahre von dem Japaner [[Yukihiro Matsumoto]] entworfen wurde.
+
+Ruby ist [[Objektorientierte Programmierung|objektorientiert]], unterstützt aber mehrere weitere [[Programmierparadigma|Programmierparadigmen]] (unter anderem [[Prozedurale Programmierung|prozedurale]] und [[funktionale Programmierung]] sowie [[Nebenläufigkeit]]), bietet [[dynamische Typisierung]], [[Reflexion (Programmierung)|Reflexion]] und [[automatische Speicherbereinigung]]. Ein Programm in Ruby wird zur Laufzeit [[Interpreter|interpretiert]].  2012 wurde die Ruby-Spezifikation als internationale Norm ISO/IEC 30170 standardisiert.<ref>[http://www.iso.org/iso/iso_catalogue/catalogue_tc/catalogue_detail.htm?csnumber=59579 iso.org]</ref>
+
+== Geschichte ==
+[[Datei:Yukihiro Matsumoto.JPG|miniatur|Der Entwickler von Ruby, Yukihiro Matsumoto]]
+
+Aus Unzufriedenheit über verfügbare Skriptsprachen begann Yukihiro „Matz“ Matsumoto 1993, an einer eigenen Sprache zu arbeiten, und gab am 21. Dezember 1995 die erste Version von Ruby, 0.95, frei.<ref>[http://blog.nicksieger.com/articles/2006/10/20/rubyconf-history-of-ruby RubyConf: History of Ruby]</ref> Den Namen, hergeleitet vom [[Schmuckstein|Edelstein]] [[Rubin]], wählte er als Anspielung auf die Programmiersprache [[Perl (Programmiersprache)|Perl]].<ref>[http://www.linuxdevcenter.com/pub/a/linux/2001/11/29/ruby.html Ein Interview mit dem Schöpfer von Ruby]</ref>
+
+Zunächst wurde Ruby mangels englischsprachiger Dokumentation fast ausschließlich in [[Japan]] benutzt, wo es einen ähnlichen Stellenwert erlangte wie [[Perl (Programmiersprache)|Perl]] und [[Python (Programmiersprache)|Python]] in [[Europa]] und [[Amerika]]. Um das Jahr 2000 wurden Aktivitäten gestartet, um Ruby auch außerhalb Japans bekannt zu machen, woraufhin mit der Zeit auch englische Dokumentationen entstanden. Inzwischen gibt es auch Dutzende deutschsprachige Bücher zu Ruby im Allgemeinen und zu speziellen Themen.
+
+Heute wird die Sprache als [[Open Source|Open-Source-Projekt]] weitergepflegt.
+
+== Merkmale ==
+=== Programmierparadigmen ===
+Ruby ist eine objektorientierte [[General Purpose Language|Allzwecksprache]]. Die Sprache wurde aber ähnlich wie [[C++]] als „Multiparadigmen-Sprache“ entworfen. Das bedeutet, dass es dem Entwickler offensteht, weitere [[Programmierparadigma|Programmierparadigmen]] zur Erstellung seiner Programme zu nutzen. Die verbreitetsten Paradigmen sollen im Folgenden beschrieben werden.
+
+==== Objektorientierte Programmierung ====
+Ruby ist wie [[Smalltalk (Programmiersprache)|Smalltalk]] vollständig objektorientiert: Alle Datentypen sind in Ruby Objekte, auch solche, die in vielen anderen Sprachen als [[Datentyp#Elementare Datentypen|primitive Datentypen]] gelten, wie etwa Zahlen oder Zeichen.
+
+Ruby unterstützt mehrere Ansätze der [[Vererbung (Programmierung)|Vererbung]].
+
+===== Klassenbasierte Objektorientierung =====
+Eine [[Klasse (Programmierung)|Klasse]] kann wie folgt definiert werden:
+
+<syntaxhighlight lang="ruby">
+class Auto
+  def beschleunigen
+    puts "brumm brumm brumm"
+  end
+end
+
+auto1 = Auto.new
+auto1.beschleunigen
+</syntaxhighlight>
+
+Ausgabe:
+ brumm brumm brumm
+
+<code>Auto</code> [[Vererbung (Programmierung)|erbt]] dabei automatisch von der Mutterklasse <code>Object</code>. Eine Klasse, die von einer anderen Klasse als <code>Object</code> erbt, wird so definiert:
+
+<syntaxhighlight lang="ruby">
+class Gutes_Auto < Auto
+  def bremsen
+    puts "quietsch"
+  end
+end
+
+auto2 = Gutes_Auto.new
+auto2.beschleunigen
+auto2.bremsen
+</syntaxhighlight>
+
+Ausgabe:
+ brumm brumm brumm
+ quietsch
+
+Die Klasse <code>Gutes_Auto</code> erbt alle Methoden der Klasse <code>Auto</code>, u.&nbsp;a. auch <code>beschleunigen</code>. Zusätzlich wird für <code>Gutes_Auto</code> die Methode <code>bremsen</code> definiert.
+
+===== Prototypenbasierte Objektorientierung =====
+Ruby unterstützt zudem, ähnlich wie [[JavaScript]] oder [[Io (Programmiersprache)|Io]], [[Prototypenbasierte Programmierung|prototypenbasierte Objektorientierung]].
+
+Das obige Beispiel mit Prototypen realisiert:
+
+<syntaxhighlight lang="ruby">
+auto1 = Object.new
+def auto1.beschleunigen
+  puts "brumm brumm brumm"
+end
+
+auto1.beschleunigen
+
+auto2 = auto1.clone
+def auto2.bremsen
+  puts "quietsch"
+end
+
+auto2.beschleunigen
+auto2.bremsen
+</syntaxhighlight>
+
+Ausgabe:
+ brumm brumm brumm
+ brumm brumm brumm
+ quietsch
+
+===== Objektorientierung mit Mixins =====
+Bis vor einiger Zeit wurden [[Mixin]]s als reine Ergänzung zu klassenbasierter Objektorientierung angesehen. Spätestens seit Sprachen wie Python ist aber klar, dass es sich hierbei um ein eigenes Konzept der Objektorientierung handelt. Dieses wird auch von Ruby unterstützt.
+
+In Ruby sind Mixins Module, die in andere Objekte eingebunden werden. Die Methoden des Beispiels aus den beiden oberen Abschnitten ließen sich zum Beispiel so in Module teilen:
+
+<syntaxhighlight lang="ruby">
+module Gaspedal
+  def beschleunigen
+    puts "brumm brumm brumm"
+  end
+end
+
+module Bremse
+  def bremsen
+    puts "quietsch"
+  end
+end
+</syntaxhighlight>
+
+Ein Auto mit Gaspedal und Bremsen ließe sich dann wie folgt zusammenbauen:
+<syntaxhighlight lang="ruby">
+auto = Object.new
+auto.extend Gaspedal
+auto.extend Bremse
+</syntaxhighlight>
+
+Das lässt sich mit Klassen kombinieren:
+
+<syntaxhighlight lang="ruby">
+class Auto
+  include Gaspedal
+end
+
+class GutesAuto < Auto
+  include Bremse
+end
+</syntaxhighlight>
+
+Auch mit Prototypen ist es nutzbar:
+
+<syntaxhighlight lang="ruby">
+auto1 = Object.new
+auto1.extend Gaspedal
+
+auto2 = auto1.clone
+auto2.extend Bremse
+</syntaxhighlight>
+
+==== Prozedurale Programmierung ====
+Im Gegensatz zu Sprachen wie [[Java (Programmiersprache)|Java]] und [[C-Sharp|C#]] ist es in Ruby nicht notwendig, seine Programme explizit in einer Klasse zu definieren. Da jedes Ruby-Programm in einem globalen <code>main</code>-Objekt erstellt wird, ist dieses sich oft wiederholende Sprachkonstrukt unnötig. Stattdessen kann ein Programm auch aus [[Prozedur (Programmierung)|Prozeduren]] aufgebaut werden. Folgender Codeabschnitt ist bereits ein vollständig lauffähiges Ruby-Programm:
+
+<syntaxhighlight lang="ruby">
+def gruessen
+  puts "Hallo Welt!"
+end
+
+gruessen
+</syntaxhighlight>
+
+Ausgabe:
+ Hallo Welt!
+
+==== Funktionale Programmierung ====
+Weil in Ruby jeder Ausdruck einen Wert hat, lassen sich Probleme [[Funktionale Programmierung|funktional]] behandeln.
+
+Im folgenden Beispiel gibt das Case-Konstrukt je nach Wert der Variablen <code>sprache</code> eine andere Zeichenkette zurück.
+
+<syntaxhighlight lang="ruby">
+gruss = case sprache
+          when "Deutsch"   then "Hallo Welt"
+          when "Englisch"  then "Hello, world"
+          when "Japanisch" then "konnichiwa sekai"
+          else raise "Unbekannte Sprache"
+        end
+</syntaxhighlight>
+
+Über ein [[Lambda-Kalkül|Lambda]]-Konstrukt kann man einen Codeblock in einer Funktionsvariablen speichern.
+<syntaxhighlight lang="ruby">
+print_function = lambda { |item| print item + 1 }
+[1,2,3].each &print_function
+# >> 234
+</syntaxhighlight>
+
+==== Weitere Paradigmen ====
+Ruby unterstützt [[Metaprogrammierung]], [[aspektorientierte Programmierung]] durch [[Ruby on Rails#Konzept|Active Support]] oder AspectR<ref>[http://aspectr.sourceforge.net/ aspectr.sourceforge.net]</ref> und [[kontextorientierte Programmierung]]<ref>[http://www.swa.hpi.uni-potsdam.de/cop/ swa.hpi.uni-potsdam.de]</ref> durch ContextR.<ref>[http://contextr.rubyforge.org/ contextr.rubyforge.org]</ref>
+
+=== Prinzipien ===
+==== Prinzip der geringsten Überraschung ====
+Ruby folgt dem [[Principle of Least Surprise|Prinzip der geringsten Überraschung]] (kurz ''POLS'' für „Principle of Least Surprise“). Rubys Designer versuchen, die Sprache so zu gestalten, dass Programmierer sie intuitiv nutzen können und möglichst wenig von ihrem Verhalten überrascht werden. Matsumoto gibt an, die Sprache primär auf seine eigenen Bedürfnisse ausgerichtet zu haben:
+{{Zitat|Das Prinzip der geringsten Überraschung ist das Prinzip ''meiner'' geringsten Überraschung. Und es ist das Prinzip der geringsten Überraschung, nachdem Du Ruby sehr gut gelernt hast.|Yukihiro „Matz“ Matsumoto}}
+
+==== Duck Typing ====
+Die ''[[Duck-Typing]]''-Philosophie von Ruby basiert auf der Idee, den Typ eines Objekts nicht von dessen Klasse, sondern von dessen Methoden abhängig zu machen.
+
+<syntaxhighlight lang="ruby">
+class Ente
+  def beschreibung
+    "Eine graue Ente"
+  end
+  def sprechen
+    "Quak!"
+  end
+end
+
+class Kuh
+  def beschreibung
+    "Eine dicke Kuh"
+  end
+  def sprechen
+    "Muuuh!"
+  end
+end
+
+def lass_sprechen tier
+  puts "#{ tier.beschreibung } macht: #{ tier.sprechen }"
+end
+
+lass_sprechen Ente.new
+lass_sprechen Kuh.new
+</syntaxhighlight>
+
+Ausgabe:
+ Eine graue Ente macht: Quak!
+ Eine dicke Kuh macht: Muuuh!
+
+Im Beispiel ist es für <code>lass_sprechen</code> unerheblich, von welcher ''Klasse'' <code>tier</code> ist, es ist nur wichtig, dass die Methoden <code>beschreibung</code> und <code>sprechen</code> verstanden werden.
+
+Ruby bietet [[Exception]]s, [[Reflexion (Programmierung)|Introspection]] und andere Mechanismen, um das Duck Typing abzusichern, sofern der Programmierer das wünscht.
+
+=== Syntax ===
+==== Besonderheiten ====
+Zeilenumbrüche markieren das Ende einer Anweisung, Semikolons bewirken dasselbe. Sonstiger [[Leerraum|Whitespace]] hat keine Bedeutung.
+
+Klammern um Argumente können bei Eindeutigkeit weggelassen werden, sowohl bei der Deklaration einer Methode als auch beim Aufruf. Der zuletzt berechnete Wert einer Methode ist gleichzeitig ihr Rückgabewert:
+
+<syntaxhighlight lang="ruby">
+def sperre text
+  buchstaben = text.split ""
+  buchstaben.join " "
+end
+
+puts sperre "Syntaktischer Zucker!"
+</syntaxhighlight>
+Ausgabe:
+
+ S y n t a k t i s c h e r   Z u c k e r !
+
+Ruby unterscheidet fünf Gültigkeitsbereiche:
+* Normalerweise ist eine Variable lokal und nur innerhalb der umgebenden Methode gültig.
+* Ein <code>@</code> vor Variablen deklariert diese als Attribute, sie werden dann dauerhaft der [[Instanz (Informatik)|Instanz]] zugeordnet und sind für diese sichtbar.
+* Ein vorangestelltes <code>@@</code> macht Variablen zu Klassenvariablen, die zur umgebenden Klasse gehören.
+* Mit <code>$</code> werden Variablen global und sind damit im gesamten Programm sichtbar.
+* Schließlich gibt es Variablen, die nur innerhalb eines Blocks gültig sind.
+
+==== Blöcke ====
+Anstatt von [[For-Schleife]]n macht man in Ruby häufig Gebrauch von sogenannten Blöcken. Dies sind Codeabschnitte, die nach bestimmten Vorgaben, etwa für alle Elemente einer Datenstruktur, ausgeführt werden. Sie können unter anderem benutzt werden, um Strukturen auszuwerten oder zu manipulieren. Ausdrücke wie
+
+<syntaxhighlight lang="ruby">
+array.each do |element|
+    ...
+end
+</syntaxhighlight>
+
+oder in der Kurzschreibweise
+
+<syntaxhighlight lang="ruby">
+array.each { |element| ... }
+</syntaxhighlight>
+
+[[Iterator|iterieren]] über <code>array</code>, wobei dem Block in jedem Iterationsschritt ein [[Besucher (Entwurfsmuster)|Visitor]] für das aktuelle Element mit der Bezeichnung <code>element</code> übergeben wird.
+Mit Blöcken werden elegante Konstruktionen wie <code style="white-space: nowrap">5.times{ ... }</code> oder <code>array.sort_by{|element| element.size}</code> möglich.
+
+Iteratoren, also Methoden, die Blöcke aufrufen, können auch selbst definiert werden:
+
+<syntaxhighlight lang="ruby">
+def mach_zweimal
+    yield
+    yield
+end
+
+mach_zweimal { puts "Block aufgerufen!" }
+</syntaxhighlight>
+
+Ausgabe:
+
+ Block aufgerufen!
+ Block aufgerufen!
+
+== Bestandteile ==
+=== Interaktive Ruby-Shell ===
+'''Interactive Ruby''' ('''irb''') ist eine [[Kommandozeileninterpreter|Read-Eval-Print Loop]] (REPL), mit welcher der Anwender interaktiv Ruby programmieren kann. Irb wird mit dem Ruby-Interpreter ausgeliefert und kann zum Analysieren und Testen eingesetzt werden:
+
+<syntaxhighlight lang="ruby">
+irb(main):001:0> (5 + 7) * 2
+=> 24
+irb(main):002:0> ((5 + 7) * 2).to_s.reverse
+=> "42"
+irb(main):003:0> "Ein Beispielstring".size
+=> 18
+</syntaxhighlight>
+
+=== RDoc und ri ===
+[[RDoc]] ist ein [[Software-Dokumentationswerkzeug]], welches aus Ruby- und C-Quelltexten automatisch [[Hypertext Markup Language|HTML]]-Dokumentationsdateien erstellt. Weiterhin wird eine Datenbank aufgebaut, die mit dem Tool ri durchsucht werden kann. RDoc und ri sind Bestandteil der Standarddistribution und werden zusammen mit dem Interpreter ausgeliefert.
+
+=== RubyGems ===
+[[RubyGems]] (kurz: '''gems''') ist das offizielle [[Paketmanagement|Paketsystem]] für Ruby. Mit ihm kann der Anwender mehrere Versionen eines Programmes oder einer Bibliothek kontrolliert installieren und wieder entfernen. Durch die Versionierung der Pakete können alte und neue Versionen problemlos nebeneinander existieren.
+
+== Implementierungen ==
+=== Referenzimplementierung ===
+Die Referenzimplementierung von Ruby (aktuelle Version: 2.3.0) wurde von Yukihiro „Matz“ Matsumoto als [[Interpreter]] in C entworfen. Dieser wird meist als '''MRI''' (''Matz’s Ruby Interpreter'') oder auch als '''CRuby''' oder '''MatzRuby''' bezeichnet und ist derzeit am weitesten verbreitet. Den Kern bildet '''[[YARV]]''' (''Yet Another Ruby VM''), eine [[virtuelle Maschine]]. Statt ein Rubyprogramm direkt auszuführen, wird es zunächst in [[Bytecode]] übersetzt und dann von YARV interpretiert, wodurch sich ein Geschwindigkeitsvorteil ergibt. Weiterhin enthält diese Version eine leistungsstarke [[Regulärer Ausdruck|Regexp]]-Maschine namens Oniguruma und unterstützt Multibyte-Zeichensätze wie [[UTF-8]]. Die Vorgängerversion (1.8.7) wurde bis Ende Juni 2013 weiter gepflegt, da 1.9.2 nicht kompatibel zu dieser ist und eine Vielzahl von Programmen deshalb noch nicht fehlerfrei auf der neuen Version liefen.
+
+Der offizielle Interpreter läuft auf den folgenden Betriebssystemen:
+* [[Portable Operating System Interface|POSIX]]-kompatible Systeme (u.&nbsp;a. [[Linux]], [[Berkeley Software Distribution|BSD]] und [[Mac OS X]])
+* [[Microsoft Windows]] (u.&nbsp;a. [[Microsoft Windows 2000|2000]] und [[Microsoft Windows XP|XP]])
+
+=== Alternative Implementierungen ===
+Inzwischen sind mehrere alternative Implementierungen von Ruby verfügbar, unter anderem:
+* '''[[JRuby]]''', eine Neuimplementierung des Ruby-Interpreters in Java mit dem Ziel, Ruby nahtlos in die [[Java-Plattform]] zu integrieren. JRuby ist fast vollständig kompatibel zu Ruby 1.8.7, teilweise auch zu 1.9. JRuby ist zudem kompatibel zu einigen Ruby-Erweiterungen von Rubinius (Foreign Function Interface, Multi-VM-API).
+* '''[[Rubinius]]''', eine von [[Smalltalk (Programmiersprache)|Smalltalk-80]] inspirierte Implementierung. Abgesehen von der virtuellen Maschine ist Rubinius vollständig in Ruby geschrieben. Rubinius ist nahezu vollständig kompatibel zu Ruby 1.8.7 und hat experimentelle Unterstützung für die Version 1.9. Rubinius nutzt die [[Low Level Virtual Machine]] (LLVM) und ist kompatibel mit [[C (Programmiersprache)|C]]-Erweiterungen der Referenzimplementierung.
+* '''[http://www.ironruby.net/ IronRuby]''' ist eine Implementierung, die Ruby ins [[.NET-Framework]] integriert und in [[C-Sharp|C#]] implementiert ist.<br />Das Projekt ist seit 13. März 2011 inaktiv und wird nicht mehr weiterentwickelt.
+* '''[http://cardinal2.rubyforge.org/ Cardinal]''', ein Interpreter für die virtuelle Maschine [[Parrot]].
+* '''[http://ruby.gemstone.com/ MagLev]''' ist eine Implementierung des Unternehmens [[Gemstone]] für deren [[proprietär]]e Smalltalk VM.
+* '''[http://www.macruby.org/ MacRuby]''' ist eine Implementierung in [[Objective-C]] von [[Apple]], die bis Version 0.4, wie Ruby 1.9, YARV nutzt, ab Version 0.5 allerdings, wie [[Rubinius]], auf die [[LLVM]] setzt. MacRuby ist als einzige Implementierung nur zu Ruby 1.9 kompatibel, nicht mehr zu Ruby 1.8. Die Weiterentwicklung wurde mit dem 5. Januar 2015 eingestellt.
+* '''[http://macournoyer.com/blog/2009/02/12/tinyrb/ tinyrb]''' ist eine minimalistische Implementierung, angelehnt an die virtuellen Maschinen von [[Lua]] und [http://github.com/whymirror/potion Potion]. Es wird keine vollständige Kompatibilität zu Ruby erreicht werden: Zwar soll jedes Programm, das tinyrb ausführen kann, auch von Ruby ausführbar sein, jedoch soll umgekehrt tinyrb nicht jedes Rubyprogramm ausführen können.
+* '''[http://www.rubyenterpriseedition.com/ Ruby Enterprise Edition]''' ist eine modifizierte Version der Referenzimplementierung, bei der im Wesentlichen der [[Garbage Collector]] neu implementiert wurde. (Siehe dazu: [[#Kritik|Kritik]])
+* Eine auf [[ABAP]] aufbauende Neuimplementierung namens '''Blue Ruby''' wird im Moment von [[SAP]] entwickelt. Als einzige der hier aufgeführten Implementierungen ist Blue Ruby derzeit nicht [[Open Source|quelloffen]].
+* '''[http://opalrb.org/ Opal]''' ist ein Compiler von Ruby nach Javascript. Es handelt sich um eine Implementierung der Ruby corelib und stdlib, sowie zugehörige gems. Damit lassen sich schnelle clientseitige Web Applikationen in Ruby realisieren. Es gibt einige (wenige) Einschränkungen, die der Umsetzung nach JavaScript geschuldet sind.<ref>{{Internetquelle|url=http://opalrb.org/docs/faq/|titel=Opal Faq|zugriff=2014-08-03}}</ref>
+
+Die Kompatibilität zur Referenzimplementierung wurde durch das RubySpec-Projekt<ref>[http://rubyspec.org/ rubyspec.org]</ref> überprüft, das von allen genannten Implementierungen, mit Ausnahme von tinyrb und Cardinal, genutzt wurde (Stand: November 2009). Es stellte dabei sowohl eine [[Testsuite (Webapplikation)|Testsuite]] als auch eine [[Spezifikation]] für Ruby 1.8 und 1.9 dar. RubySpec war ursprünglich ein Teil von Rubinius, wurde aber ausgelagert und danach auch von einer Vielzahl anderer Entwickler vorangetrieben. Mit 31. Dezember 2014 wurde das Projekt schließlich eingestellt.<ref>[http://rubini.us/2014/12/31/matz-s-ruby-developers-don-t-use-rubyspec/ rubini.us]</ref>
+
+Mit dem [http://rvm.beginrescueend.com/ Ruby Version Manager], kurz RVM, steht eine einfache Möglichkeit zur Verfügung, mehrere Ruby-Implementierungen und Gem-Versionen parallel zu betreiben.
+
+Ein wichtiges Merkmal der Implementierungen ist, ob sie in der Lage sind, [[Ruby on Rails]] auszuführen. Derzeit können dies neben der Referenzimplementierung nur JRuby,<ref>[http://wiki.jruby.org/wiki/JRuby_on_Rails wiki.jruby.org]</ref> IronRuby,<ref>[http://iunknown.com/2008/05/ironruby-and-rails.html iunknown.com]</ref> Rubinius<ref>[http://blog.fallingsnow.net/2008/05/17/rails-on-rubinius/ blog.fallingsnow.net]</ref> und die Ruby Enterprise Edition<ref>[http://www.rubyenterpriseedition.com/ rubyenterpriseedition.com]</ref> (Stand: September 2010).
+
+== Kritik ==
+Kritik an der Sprache wurde aus verschiedenen Gründen geübt:
+* Da Variablen vor Gebrauch nicht deklariert werden müssen, können bei Tippfehlern unerwartete Laufzeitfehler auftreten.
+* Ruby ist nicht immer [[Kompatibilität (Technik)|abwärtskompatibel]].<ref>[http://www.infoq.com/news/2007/12/ruby-19 infoq.com]</ref>
+* [[Metaprogrammierung]] und [[Monkeypatching]] erlauben es einem Codestück, alle Klassen und Objekte des Prozesses, in dem es ausgeführt wird, zu ändern.<ref>[http://avdi.org/devblog/2008/02/23/why-monkeypatching-is-destroying-ruby/ avdi.org]</ref>
+
+Auch an der Referenzimplementierung bemängeln Kritiker mehrere Aspekte:
+* YARVs [[Global Interpreter Lock]] führt dazu, dass mehrere Threads eines Prozesses nicht gleichzeitig auf verschiedenen [[Prozessorkern]]en ausgeführt werden können.<ref>[http://www.infoq.com/news/2007/05/ruby-threading-futures infoq.com]</ref><ref>[http://www.igvita.com/2008/11/13/concurrency-is-a-myth-in-ruby/ igvita.com]</ref>
+
+== Sonstiges ==
+=== Anwendungen und Bibliotheken ===
+Als [[Paketverwaltung]] und zentrales [[Repository]] zur Verteilung von Bibliotheken dient [[RubyGems]], das seit Ruby 1.9 Bestandteil der Standardbibliothek von Ruby ist. In Verbindung mit [[GitHub]], wo ein großer Teil der Bibliotheksentwicklung mit Versionskontrolle, [[Issue-Tracking-System]] usw. stattfindet, löst es damit weitgehend [http://rubyforge.org/ RubyForge] und das [http://raa.ruby-lang.org/ Ruby Application Archive] (RAA) als wichtigste Plattformen ab.
+
+Als wichtige Bibliotheken, die auf Ruby basieren, sind die [[Web Application Framework|Web-Frameworks]] [[Ruby on Rails]] und [[Sinatra (Software)|Sinatra]] zu nennen, die auch über die Ruby-Community heraus sehr einflussreich sind. Auf der Anwendungsseite ist [[Redmine]] zu nennen, ein beliebtes Tool zum Projektmanagement.
+
+=== Nutzungsbedingungen ===
+Ruby ist [[freie Software]]. Deshalb ist es kostenlos nutzbar und im [[Quelltext]] verfügbar. Dadurch ergibt sich die Möglichkeit, die Sprache an seine eigenen Bedürfnisse anzupassen oder sie in eigene Programme einzubinden.
+
+Der Interpreter und die Standardbibliothek von Ruby sind grundsätzlich unter den Bedingungen der [[BSD-Lizenz#Werbeklausel|2-clause BSD-Lizenz]] nutzbar. Des Weiteren besteht die Möglichkeit, Ruby unter einer eigenen freien Lizenz zu verwenden.<ref>{{Internetquelle|url=http://www.ruby-lang.org/en/about/license.txt|titel=Rubys Lizenzbedingungen|zugriff=2012-01-15}}</ref> Die Ruby-Lizenz ist GPL-kompatibel und wird von der [[Free Software Foundation]] als „frei“ akzeptiert.<ref>{{Internetquelle|url=http://www.gnu.org/licenses/license-list.html#Ruby|titel=Liste der GPL-kompatiblen Lizenzen|zugriff=2012-07-08}}</ref>
+
+Ältere Versionen von Ruby (1.9.2 und früher) verwendeten anstatt der BSD-Lizenz die [[GNU General Public License|GPL V2]]. Als Begründung für den Wechsel wurden Inkompatibilitäten der alten Lizenzierung mit der GPL V3 angeführt.<ref>{{Internetquelle|url=http://www.ruby-forum.com/topic/216010|titel=Mailinglistendiskussion zum Lizenzwechsel|zugriff=2012-07-08}}</ref><ref>{{Internetquelle|url=http://bugs.ruby-lang.org/projects/ruby/wiki/DevelopersMeeting20100827|titel=Beschluss zum Lizenzwechsel auf dem Ruby Developers Meeting 2010|zugriff=2012-07-08}}</ref>
+
+== Literatur ==
+'''Für Einsteiger'''
+* {{Literatur|Autor=Chris Pine|Titel=Learn to Program|Auflage=2.|Verlag= The Pragmatic Programmers|Ort= |Jahr=2009|ISBN=978-1-93435-636-4| Seiten= |Online=[https://pine.fm/LearnToProgram/ Kürzere Version kostenlos online]|Kommentar=Englisch}}
+* {{Literatur|Autor=David A. Black|Titel=The Well-Grounded Rubyist|Auflage=2.|Verlag= Manning|Ort= |Jahr=2014|ISBN=978-1-61729-169-2|Seiten=536|Online=[https://manning-content.s3.amazonaws.com/download/0/6bfe05f-627d-4048-b9be-ac0ee85d61ce/Black_TheWellGroundedRubyist_Err1.html Errata], [https://manning-content.s3.amazonaws.com/download/c/01aa8a7-b69b-41f2-a172-4582c34d18b2/twgr2E-code.zip Quellcode]|Kommentar=Englisch}}
+
+'''Gesamtdarstellungen'''
+* Dave Thomas: ''Programming Ruby''. O’Reilly, Neuauflage 2013, ISBN 1-937785-49-1 (englisch)
+* Hal Fulton: ''The Ruby Way''. Addison-Wesley Professional, 3. Auflage 2015, ISBN 0-321-71463-6 (englisch)
+* David Flanagan, Yukihiro Matsumoto: ''Die Programmiersprache Ruby''. O’Reilly Media, 2008, ISBN 978-3-89721-874-1
+
+'''Für Fortgeschrittene'''
+* Lucas Carlson, Leonard Richardson: ''Ruby Cookbook''. O’Reilly Media, 2. Auflage 2015, ISBN 1-4493-7371-2 (englisch)
+* Pat Shaughnessy: ''Ruby Under a Microscope''. No Starch Press, 1. Auflage 2013, ISBN 1-59327-527-7 (englisch)
+* Russ Olsen: ''Eloquent Ruby''. Addison-Wesley Professional, 2011, ISBN 978-0-321-58410-6 (englisch)
+* Russ Olsen: ''Design Patterns in Ruby''. Addison-Wesley Professional, 2007, ISBN 978-0-321-49045-2 (englisch)
+
+'''Referenzhandbücher'''
+
+== Normen und Standards ==
+* ISO/IEC 30170 (englisch; standardisiert Ruby auf über 317 Seiten). Erste Version April 2012.
+
+== Weblinks ==
+{{Commonscat|Ruby programming language|Ruby}}
+{{Wikibooks|Ruby-Programmierung}}
+* [http://www.ruby-lang.org/de/ Offizielle Website von Ruby]
+* [http://www.ruby-lang.org/de/documentation/ Zusammenstellung von Tutorials zu Ruby]
+* [http://ruby-doc.org/ Dokumentationssammlung zu Ruby] (englisch)
+* {{dmoz|World/Deutsch/Computer/Programmieren/Sprachen/Ruby|Ruby}}
+
+== Einzelnachweise ==
+<references />
+
+[[Kategorie:Interpretersprache]]
+[[Kategorie:Ruby (Programmiersprache)| ]]
+[[Kategorie:Freies Programmierwerkzeug]]
+[[Kategorie:Objektorientierte Programmiersprache]]
+[[Kategorie:Prozedurale Programmiersprache]]
+[[Kategorie:Funktionale Programmiersprache]]
+
