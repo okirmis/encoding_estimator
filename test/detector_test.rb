@@ -124,7 +124,7 @@ class TestDetector < Minitest::Test
         EncodingEstimator.ensure_utf8(
             get_file_content( language, encoding, operation ),
             configuration
-        ), get_file_content( language, 'utf-8', EncodingEstimator::Conversion::Operation::KEEP )
+        ).strip, get_file_content( language, 'utf-8', EncodingEstimator::Conversion::Operation::KEEP ).strip
     )
   end
 
