@@ -32,7 +32,11 @@ class TestDetector < Minitest::Test
     perform_internal_builder nil
 
     assert(
-        JSON.parse( File.read( language_file 2 ) )== JSON.parse(File.read( language_file nil ) )
+        JSON.parse(
+            File.read( language_file( 2 ), encoding: 'utf-8' )
+        ) == JSON.parse(
+            File.read( language_file( nil ), encoding: 'utf-8' )
+        )
     )
   end
 
@@ -58,7 +62,7 @@ class TestDetector < Minitest::Test
     builder.execute!( num_cores, false )
 
     # Save the results (json serialized)
-    File.open(language_file(num_cores ), 'w' ) do |f|
+    File.open(language_file(num_cores ), 'w:utf-8' ) do |f|
       f.write JSON.unparse( builder.results )
     end
   end
@@ -172,7 +176,7 @@ class TestDetector < Minitest::Test
   # @param [Symbol] operation Sub-folder: dec or enc
   # @return [String] Data loaded from the sample file
   def get_file_content( language, encoding, operation )
-    File.read( "#{File.expand_path( File.dirname(__FILE__) )}/samples/#{operation}/#{language.to_s}/#{encoding}.txt" )
+    File.read( "#{File.expand_path( File.dirname(__FILE__) )}/samples/#{operation}/#{language.to_s}/#{encoding}.txt", encoding: 'utf-8' )
   end
 end
 

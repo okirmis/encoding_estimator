@@ -1,9 +1,3 @@
-before_script:
-  - export LC_ALL=C.UTF-8
-  - export LANG=C.UTF-8
-  - export LANGUAGE=C.UTF-8
-  - export
-
 test:2.0:
   image: ruby:2.0
   script:
@@ -28,7 +22,7 @@ test:2.3:
     - bundle install && ruby test/detector_test.rb
 
 
-test:2.4-rc:
+test:2.4:
   image: ruby:2.4-rc
   script:
     - bundle install && ruby test/detector_test.rb

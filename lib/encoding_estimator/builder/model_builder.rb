@@ -59,7 +59,7 @@ module EncodingEstimator
     #
     # @return [String] Content of the file without whitespaces
     def load_content
-      raw       = File.read( @filename ).encode('UTF-16be', invalid: :replace, replace: '').encode('UTF-8')
+      raw       = File.read( @filename, encoding: 'utf-8' ).encode('UTF-16be', invalid: :replace, replace: '').encode('UTF-8')
       decoder   = HTMLEntities.new
       plaintext = decoder.decode raw
 

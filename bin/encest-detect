@@ -51,7 +51,7 @@ opts[:threads] = opts[:threads] == 0 ? nil : opts[:threads]
 
 # Process every file
 opts.arguments.each do |file|
-  detection = EncodingEstimator.detect File.read(file ), {
+  detection = EncodingEstimator.detect File.read( file, encoding: 'utf-8' ), {
                     languages:  opts[:languages],  encodings: opts[:encodings],
                     operations: opts[:operations], include_default: true,
                     num_cores:  opts[:threads]

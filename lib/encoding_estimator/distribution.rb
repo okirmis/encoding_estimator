@@ -37,7 +37,7 @@ module EncodingEstimator
 
       begin
         distribution = JSON.parse(
-            File.read( language.path )
+            File.read( language.path, encoding: 'utf-8' )
         )
       rescue Exception
         distribution = {}

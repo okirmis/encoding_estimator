@@ -101,5 +101,5 @@ configurations.each do |config|
   runner.execute!( opts[:threads], !silent )
 
   # Save the model as json
-  File.open("#{config.language}.json", 'w') { |f| f.write JSON.unparse(runner.results) }
+  File.open("#{config.language}.json", 'w:utf-8') { |f| f.write JSON.unparse(runner.results) }
 end

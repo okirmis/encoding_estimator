@@ -24,7 +24,7 @@ languages.each do |lang, content|
       s = c.perform content
 
       FileUtils.mkpath( './samples/' + opname.to_s + '/' + lang.to_s )
-      File.open( './samples/' + opname.to_s + '/' + lang.to_s + '/' + encoding + '.txt', 'w' ) do |f|
+      File.open( './samples/' + opname.to_s + '/' + lang.to_s + '/' + encoding + '.txt', 'w:utf-8' ) do |f|
         f.write s
       end
     end
