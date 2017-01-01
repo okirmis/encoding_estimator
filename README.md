@@ -20,6 +20,8 @@ The second one is a shortcut you can use in case you just want to be sure to get
 utf8_txt = EncodingEstimator.ensure_utf8( File.read( 'foo.txt' ), languages: [ :en, :de ] )
 ```
 
+More detailed tutorials can be found [here](./tutorials/tutorial.md).
+
 If you need more control over the operations to perform, just have a look at `EncodingEstimator::Detector` and `EncodingEstimator::Conversion`.
 
 
