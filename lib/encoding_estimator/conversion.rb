@@ -58,6 +58,13 @@ module EncodingEstimator
       @key ||= "#{operation}_#{encoding}"
     end
 
+    # Get the default (utf-8) encoding conversion: does nothing when performing the conversion.
+    #
+    # @return [EncodingEstimator::Conversion] A conversion object representing the default conversion
+    def self.default
+      EncodingEstimator::Conversion.new
+    end
+
     # Generate all conversions of for given encodings and operations. Note: this will produce
     # #encodings * #operations conversions if default is not included and #encoding * #operations + 1
     # if the default is included.
