@@ -64,7 +64,7 @@ unless detection.result.equals? EncodingEstimator::Conversion.default
   puts "Is this correct? (y/n)"
 
   # If the user accepts, decode as the detected encoding
-  content = detection.perform content if STDIN.readline.strip == 'y'
+  content = detection.result.perform content if STDIN.readline.strip == 'y'
 end
 
 CSV.parse( content ) do |row|
