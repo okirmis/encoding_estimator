@@ -156,7 +156,7 @@ class TestDetector < Minitest::Test
 
     # Default encoding?
     assert(
-        EncodingEstimator::Conversion.new.equals? detection.result
+        EncodingEstimator::Conversion.default.equals? detection.result
     )
   end
 
